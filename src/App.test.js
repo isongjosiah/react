@@ -6,7 +6,7 @@ import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import App, { Search, Button, Table } from './App';
 
-
+Enzyme.configure({ adapter: new Adapter() })
 describe('App', () => {
   // test('renders learn react link', () => {
   //   const { getByText } = render(<App />);
@@ -68,6 +68,8 @@ describe('Table', () => {
       { title: '1', author: '1', num_comments: 1, points: 2, objectID: 'Y' },
       { title: '2', author: '2', num_comments: 1, points: 2, objectID: 'z' },
     ],
+    sortKey: 'TITLE',
+    isSortReverse: false,
   }
 
   it('renders without crashing', () => {
@@ -83,12 +85,12 @@ describe('Table', () => {
     expect(tree).toMatchSnapshot()
   })
 
-  it('shows two items in list', () => {
+  it('shows three items in list', () => {
     const element = shallow(
       <Table {...props} />
     )
 
-    expect(element.find('.table-row').lenght).toBe(2)
+    expect(element.find('.table-row').length).toBe(2)
   })
 })
 
