@@ -24,6 +24,21 @@ const SORTS = {
   COMMENTS: list => sortBy(list, 'num_comments').reverse(),
   POINTS: list => sortBy(list, 'points').reverse()
 }
+const updateSearchTopStoriesState = (hits, page) => (prevState) => {
+  const { searchKey, results } = this.state
+
+  const oldHits = results && results[searchKey] ? results[searchKey].hits : []
+
+  const updatedHits = [...oldHits, ...hits]
+  this.setState({
+    results: {
+      ...results,
+      [searchKey]: { hits: updatedHits, page }
+    },
+    isLoading: false
+  })
+}
+
 
 class App extends Component {
 
@@ -46,7 +61,6 @@ class App extends Component {
     this.onDismiss = this.onDismiss.bind(this)
     this.onSearchChange = this.onSearchChange.bind(this)
     this.onSearchSubmit = this.onSearchSubmit.bind(this)
-    this.onSort = this.onSort.bind(this)
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -57,19 +71,10 @@ class App extends Component {
   }
   setSearchTopStories(result) {
     const { hits, page } = result
-    const { searchKey, results } = this.state
 
-    const oldHits = results && results[searchKey] ? results[searchKey].hits : []
-
-    const updatedHits = [...oldHits, ...hits]
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: updatedHits, page }
-      },
-      isLoading: false
-    })
+    this.setState(updateSearchTopStoriesState(hits, page))
   }
+
 
 
   fetchSearchTopStories(searchTerm, page = 0) {
